@@ -72,18 +72,18 @@
    RESET & BASE
 ══════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden}
 body{
   font-family:'DM Sans',sans-serif;
-  background:var(--bg);background-attachment:fixed;
-  color:var(--tb);overflow-x:hidden;line-height:1.6;min-height:100vh;
+  background:var(--bg);background-attachment:scroll;
+  color:var(--tb);line-height:1.6;min-height:100vh;
   transition:background 0.4s,color 0.3s;
   /* iOS safe area */
   padding-left:env(safe-area-inset-left);
   padding-right:env(safe-area-inset-right);
 }
-body::before{content:'';position:fixed;width:min(700px,110vw);height:min(700px,110vw);background:radial-gradient(circle,var(--orb1) 0%,transparent 68%);top:-15%;right:-15%;border-radius:50%;pointer-events:none;z-index:0;transition:background 0.4s}
-body::after{content:'';position:fixed;width:min(560px,90vw);height:min(560px,90vw);background:radial-gradient(circle,var(--orb2) 0%,transparent 68%);bottom:-12%;left:-12%;border-radius:50%;pointer-events:none;z-index:0;transition:background 0.4s}
+body::before{content:'';position:absolute;width:min(700px,110vw);height:min(700px,110vw);background:radial-gradient(circle,var(--orb1) 0%,transparent 68%);top:0;right:-15%;border-radius:50%;pointer-events:none;z-index:0;transition:background 0.4s}
+body::after{content:'';position:absolute;width:min(560px,90vw);height:min(560px,90vw);background:radial-gradient(circle,var(--orb2) 0%,transparent 68%);bottom:0;left:-12%;border-radius:50%;pointer-events:none;z-index:0;transition:background 0.4s}
 img{max-width:100%;display:block}
 a{-webkit-tap-highlight-color:transparent}
 ::-webkit-scrollbar{width:5px}
@@ -323,7 +323,7 @@ nav{
 /* ══════════════════════════════════════
    HERO
 ══════════════════════════════════════ */
-#hero{min-height:100svh;display:flex;align-items:center;padding:5rem 5% 3rem;position:relative;z-index:1}
+#hero{min-height:100vh;min-height:-webkit-fill-available;min-height:100svh;display:flex;align-items:center;padding:5rem 5% 3rem;position:relative;z-index:1}
 .hero-wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;width:100%}
 
 .hero-badge{
@@ -563,7 +563,7 @@ footer{
 @media(max-width:600px){
   nav{padding:0 4%;height:58px}
   .nav-logo{font-size:0.95rem}
-  #hero{padding:4.5rem 4% 2.5rem;min-height:100svh}
+  #hero{padding:4.5rem 4% 2.5rem;min-height:100vh;min-height:-webkit-fill-available;min-height:100svh}
   section{padding:3.5rem 4%}
   #stats{padding:1.8rem 4%}
   .st-i{padding:1.2rem 0.75rem}
@@ -943,389 +943,381 @@ footer{
 
 <!-- ══════════ ANIMATION STYLES ══════════ -->
 <style>
-/* ── Keyframes ── */
-@keyframes slideUp    { from{opacity:0;transform:translateY(36px)} to{opacity:1;transform:translateY(0)} }
-@keyframes slideLeft  { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
-@keyframes slideRight { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
-@keyframes zoomIn     { from{opacity:0;transform:scale(0.90)} to{opacity:1;transform:scale(1)} }
-@keyframes flipIn     { from{opacity:0;transform:perspective(600px) rotateX(-16deg) translateY(20px)} to{opacity:1;transform:perspective(600px) rotateX(0) translateY(0)} }
-@keyframes glowPulse  { 0%,100%{box-shadow:0 0 0 0 rgba(124,61,232,0)} 50%{box-shadow:0 0 28px 6px rgba(124,61,232,0.18)} }
-@keyframes shimmer    { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
-@keyframes floatY     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
-@keyframes spinOnce   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-@keyframes sweepIn    { from{left:-100%} to{left:150%} }
+/* ════════════════════════════════════════
+   KEYFRAMES
+════════════════════════════════════════ */
+@keyframes slideUp   {from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideLeft {from{opacity:0;transform:translateX(38px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-38px)}to{opacity:1;transform:translateX(0)}}
+@keyframes zoomIn    {from{opacity:0;transform:scale(0.91)}to{opacity:1;transform:scale(1)}}
+@keyframes glowPulse {0%,100%{box-shadow:0 0 0 0 rgba(124,61,232,0)}50%{box-shadow:0 0 28px 6px rgba(124,61,232,0.18)}}
+@keyframes floatY    {0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes spinOnce  {from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes sweepIn   {from{background-position:-200% 0}to{background-position:200% 0}}
 
-/* ── SAFE DEFAULT: all animated elements visible until JS kicks in ── */
-/* JS adds .anim-ready to <html> only after observers are set up     */
-html.anim-ready .will-anim {
+/* ════════════════════════════════════════
+   SAFE-FIRST ANIMATION SYSTEM
+   Elements are ALWAYS visible by default.
+   opacity:0 is ONLY applied when:
+     • html has class "anim-ready" AND
+     • html does NOT have class "ios-device"
+   This guarantees iOS never hides content.
+════════════════════════════════════════ */
+html.anim-ready:not(.ios-device) .will-anim {
   opacity: 0;
-  transition: none;
 }
-/* once .in is added — play animation */
-html.anim-ready .will-anim.in-up    { animation: slideUp    0.62s cubic-bezier(0.22,1,0.36,1) forwards; }
-html.anim-ready .will-anim.in-left  { animation: slideLeft  0.62s cubic-bezier(0.22,1,0.36,1) forwards; }
-html.anim-ready .will-anim.in-right { animation: slideRight 0.62s cubic-bezier(0.22,1,0.36,1) forwards; }
-html.anim-ready .will-anim.in-zoom  { animation: zoomIn     0.55s cubic-bezier(0.22,1,0.36,1) forwards; }
-html.anim-ready .will-anim.in-flip  { animation: flipIn     0.58s cubic-bezier(0.22,1,0.36,1) forwards; }
+html.anim-ready:not(.ios-device) .will-anim.in-up {
+  animation: slideUp    0.62s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+html.anim-ready:not(.ios-device) .will-anim.in-left {
+  animation: slideLeft  0.62s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+html.anim-ready:not(.ios-device) .will-anim.in-right {
+  animation: slideRight 0.62s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+html.anim-ready:not(.ios-device) .will-anim.in-zoom {
+  animation: zoomIn     0.55s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+html.anim-ready:not(.ios-device) .will-anim.in-flip {
+  animation: slideUp    0.58s cubic-bezier(0.22,1,0.36,1) forwards;
+}
 
-/* stagger delays */
-.del-1{animation-delay:0.04s} .del-2{animation-delay:0.10s} .del-3{animation-delay:0.16s}
-.del-4{animation-delay:0.22s} .del-5{animation-delay:0.28s} .del-6{animation-delay:0.34s}
-.del-7{animation-delay:0.40s} .del-8{animation-delay:0.46s}
+/* iOS gets fade-only animations — no translate, no opacity:0 hiding */
+html.anim-ready.ios-device .will-anim {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
 
-/* ── Section heading underline wipe ── */
-.st { position:relative; display:inline-block; }
-.st::after {
-  content:''; position:absolute; bottom:-4px; left:0;
-  width:0; height:3px; border-radius:2px;
+/* Stagger delays */
+.del-1{animation-delay:0.04s}.del-2{animation-delay:0.10s}.del-3{animation-delay:0.16s}
+.del-4{animation-delay:0.22s}.del-5{animation-delay:0.28s}.del-6{animation-delay:0.34s}
+.del-7{animation-delay:0.40s}.del-8{animation-delay:0.46s}
+
+/* ════════════════════════════════════════
+   SECTION HEADING UNDERLINE
+════════════════════════════════════════ */
+.st{position:relative;display:inline-block}
+.st::after{
+  content:'';position:absolute;bottom:-4px;left:0;
+  width:0;height:3px;border-radius:2px;
   background:linear-gradient(90deg,var(--lav),var(--ice),var(--ros));
   transition:width 0.7s cubic-bezier(0.22,1,0.36,1);
 }
-.section-in .st::after { width:100%; }
+.section-in .st::after{width:100%}
 
-/* ── Eyebrow shimmer ── */
-.ey { position:relative; overflow:hidden; }
-.section-in .ey::after {
-  content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+/* Eyebrow shimmer */
+.ey{position:relative;overflow:hidden}
+.section-in .ey::after{
+  content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,0.28),transparent);
-  animation: sweepIn 0.9s ease forwards;
+  background-size:200% 100%;
+  animation:sweepIn 0.9s ease forwards;
 }
 
-/* ── Skill cards hover ── */
-.sk-card {
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, border-color 0.3s ease !important;
-}
+/* ════════════════════════════════════════
+   HOVER EFFECTS — @media(hover:hover) only
+   Touch devices never trigger these
+════════════════════════════════════════ */
 @media(hover:hover){
-  .sk-card:hover {
-    transform: translateY(-8px) scale(1.02) !important;
-    box-shadow: var(--sh2) !important;
-    border-color: var(--bb) !important;
+
+  /* Skill cards */
+  .sk-card{transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),box-shadow 0.3s,border-color 0.3s !important}
+  .sk-card:hover{transform:translateY(-8px) scale(1.02) !important;box-shadow:var(--sh2) !important;border-color:var(--bb) !important}
+  .sk-card:hover .sk-ico{animation:spinOnce 0.5s cubic-bezier(0.22,1,0.36,1)}
+
+  /* Project cards */
+  .pj-card{transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),box-shadow 0.3s,border-color 0.3s !important;position:relative;overflow:hidden}
+  .pj-card::after{content:'';position:absolute;inset:0;border-radius:20px;background:linear-gradient(135deg,rgba(124,61,232,0.06),rgba(26,143,212,0.06));opacity:0;transition:opacity 0.3s;pointer-events:none}
+  .pj-card:hover::after{opacity:1}
+  .pj-card:hover{transform:translateY(-8px) !important;box-shadow:0 24px 60px rgba(100,70,220,0.22) !important;border-color:rgba(124,61,232,0.5) !important}
+  .pj-card:hover .pj-ico{animation:floatY 1.2s ease-in-out infinite}
+
+  /* Achievement cards */
+  .ac-card{transition:transform 0.28s cubic-bezier(0.22,1,0.36,1),box-shadow 0.28s,border-color 0.28s;position:relative;overflow:hidden}
+  .ac-card:hover{transform:translateY(-5px) scale(1.02);box-shadow:var(--sh2);border-color:rgba(124,61,232,0.45)}
+
+  /* Timeline cards */
+  .tl-card{transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),box-shadow 0.3s,border-color 0.3s !important}
+  .tl-card:hover{transform:translateX(8px) !important;box-shadow:var(--sh2) !important;border-color:rgba(124,61,232,0.45) !important}
+  .tl-card:hover .tl-ro{background:linear-gradient(135deg,var(--lav),var(--ice));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+  /* Contact links */
+  .cl{transition:transform 0.28s cubic-bezier(0.22,1,0.36,1),box-shadow 0.28s,border-color 0.28s !important;position:relative;overflow:hidden}
+  .cl::before{content:'';position:absolute;inset:0;border-radius:14px;background:linear-gradient(135deg,rgba(124,61,232,0.07),rgba(26,143,212,0.07));opacity:0;transition:opacity 0.3s;pointer-events:none}
+  .cl:hover::before{opacity:1}
+  .cl:hover{transform:translateX(8px) !important;box-shadow:var(--sh2) !important;border-color:rgba(124,61,232,0.5) !important}
+  .cl:hover .cl-ic{animation:floatY 0.8s ease-in-out}
+
+  /* Stats */
+  .st-i{transition:background 0.3s,box-shadow 0.3s;cursor:default}
+  .st-i:hover{background:rgba(124,61,232,0.10) !important;box-shadow:inset 0 0 30px rgba(124,61,232,0.08)}
+  .st-i:hover .st-n{animation:glowPulse 1s ease}
+
+  /* Pipe nodes */
+  .pn{transition:transform 0.25s ease,box-shadow 0.25s,border-color 0.25s}
+  .pn:hover{transform:translateX(6px);box-shadow:0 4px 20px rgba(124,61,232,0.15);border-color:var(--bb)}
+
+  /* Form fields */
+  .ff:focus{transform:translateY(-1px)}
+
+} /* end @media(hover:hover) */
+
+/* Nav underline */
+.nav-desktop a{position:relative}
+.nav-desktop a::after{content:'';position:absolute;bottom:-4px;left:50%;right:50%;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--lav),var(--ice));transition:left 0.3s,right 0.3s}
+.nav-desktop a.nav-active::after,.nav-desktop a:hover::after{left:0;right:0}
+.nav-desktop a.nav-active{color:var(--lav) !important}
+
+/* Hero badge float */
+.hero-badge{animation:floatY 3.5s ease-in-out infinite}
+
+/* iOS specific overrides — ensure nothing is hidden */
+@supports (-webkit-touch-callout: none){
+  .glass{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .glass2{-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  nav{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .drawer{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+  #stats,.st-i,footer,.btn-ghost{-webkit-backdrop-filter:none;backdrop-filter:none}
+  /* Hard guarantee: nothing is ever hidden on iOS */
+  .will-anim{
+    opacity:1 !important;
+    transform:none !important;
+    visibility:visible !important;
+    animation:none !important;
   }
-  .sk-card:hover .sk-ico { animation: spinOnce 0.5s cubic-bezier(0.22,1,0.36,1); }
 }
 
-/* ── Project cards hover ── */
-.pj-card {
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, border-color 0.3s ease !important;
-  position: relative; overflow: hidden;
-}
-.pj-card::after {
-  content:''; position:absolute; inset:0; border-radius:20px;
-  background:linear-gradient(135deg,rgba(124,61,232,0.06),rgba(26,143,212,0.06));
-  opacity:0; transition:opacity 0.3s; pointer-events:none;
-}
-@media(hover:hover){
-  .pj-card:hover::after { opacity:1; }
-  .pj-card:hover {
-    transform: translateY(-8px) !important;
-    box-shadow: 0 24px 60px rgba(100,70,220,0.22) !important;
-    border-color: rgba(124,61,232,0.5) !important;
-  }
-  .pj-card:hover .pj-ico { animation: floatY 1.2s ease-in-out infinite; }
-}
-
-/* ── Achievement cards hover ── */
-.ac-card {
-  transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease, border-color 0.28s ease;
-  position: relative; overflow: hidden;
-}
-.ac-card::before {
-  content:''; position:absolute; top:0; left:-100%;
-  width:60%; height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.09),transparent);
-  pointer-events:none;
-}
-@media(hover:hover){
-  .ac-card:hover::before { animation: sweepIn 0.5s ease forwards; }
-  .ac-card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: var(--sh2);
-    border-color: rgba(124,61,232,0.45);
-  }
-}
-
-/* ── Timeline cards hover ── */
-.tl-card {
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, border-color 0.3s ease !important;
-}
-@media(hover:hover){
-  .tl-card:hover {
-    transform: translateX(8px) !important;
-    box-shadow: var(--sh2) !important;
-    border-color: rgba(124,61,232,0.45) !important;
-  }
-  .tl-card:hover .tl-ro {
-    background: linear-gradient(135deg,var(--lav),var(--ice));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  }
-}
-
-/* ── Contact links hover ── */
-.cl {
-  transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease, border-color 0.28s ease !important;
-  position: relative; overflow: hidden;
-}
-.cl::before {
-  content:''; position:absolute; inset:0; border-radius:14px;
-  background:linear-gradient(135deg,rgba(124,61,232,0.07),rgba(26,143,212,0.07));
-  opacity:0; transition:opacity 0.3s; pointer-events:none;
-}
-@media(hover:hover){
-  .cl:hover::before { opacity:1; }
-  .cl:hover {
-    transform: translateX(8px) !important;
-    box-shadow: var(--sh2) !important;
-    border-color: rgba(124,61,232,0.5) !important;
-  }
-  .cl:hover .cl-ic { animation: floatY 0.8s ease-in-out; }
-}
-
-/* ── Stats hover ── */
-.st-i { transition: background 0.3s, box-shadow 0.3s; cursor:default; }
-@media(hover:hover){
-  .st-i:hover { background:rgba(124,61,232,0.10) !important; box-shadow:inset 0 0 30px rgba(124,61,232,0.08); }
-  .st-i:hover .st-n { animation: glowPulse 1s ease; }
-}
-
-/* ── Pipe nodes hover ── */
-.pn { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
-@media(hover:hover){
-  .pn:hover { transform:translateX(6px); box-shadow:0 4px 20px rgba(124,61,232,0.15); border-color:var(--bb); }
-}
-
-/* ── Nav active underline ── */
-.nav-desktop a { position:relative; }
-.nav-desktop a::after {
-  content:''; position:absolute; bottom:-4px; left:50%; right:50%;
-  height:2px; border-radius:2px;
-  background:linear-gradient(90deg,var(--lav),var(--ice));
-  transition: left 0.3s ease, right 0.3s ease;
-}
-.nav-desktop a.nav-active::after,
-.nav-desktop a:hover::after { left:0; right:0; }
-.nav-desktop a.nav-active { color:var(--lav) !important; }
-
-/* ── Form fields ── */
-@media(hover:hover){
-  .ff:focus { transform:translateY(-1px); }
-}
-
-/* ── Hero badge float ── */
-.hero-badge { animation: floatY 3.5s ease-in-out infinite; }
-
-/* respect prefers-reduced-motion */
 @media(prefers-reduced-motion:reduce){
-  *, *::before, *::after { animation:none !important; transition:none !important; }
+  *,*::before,*::after{animation:none !important;transition:none !important}
 }
 </style>
 
 <!-- ══════════ SCRIPTS ══════════ -->
 <script>
 (function(){
+  'use strict';
+
+  /* ── Detect iOS ── */
+  var isIOS = (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  ) && !window.MSStream;
+
+  /* Tag html immediately so CSS @supports override kicks in right away */
+  if(isIOS) document.documentElement.classList.add('ios-device');
 
   /* ── Theme ── */
-  const html = document.documentElement;
-  const saved = localStorage.getItem('tds-theme') ||
+  var html  = document.documentElement;
+  var saved = localStorage.getItem('tds-theme') ||
     (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
   html.setAttribute('data-theme', saved);
 
   function setThemeUI(t){
-    const desktopBtn  = document.getElementById('themeBtn');
-    const mobileLabel = document.getElementById('themeIconMobile');
-    if(desktopBtn)  desktopBtn.textContent  = t === 'dark' ? '☀️' : '🌙';
-    if(mobileLabel) mobileLabel.textContent = t === 'dark' ? '☀️  Light Mode' : '🌙  Dark Mode';
+    var db = document.getElementById('themeBtn');
+    var ml = document.getElementById('themeIconMobile');
+    if(db) db.textContent = t === 'dark' ? '☀️' : '🌙';
+    if(ml) ml.textContent = t === 'dark' ? '☀️  Light Mode' : '🌙  Dark Mode';
   }
   setThemeUI(saved);
 
   function toggleTheme(){
-    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
     localStorage.setItem('tds-theme', next);
     setThemeUI(next);
   }
-  const desktopTheme = document.getElementById('themeBtn');
-  const mobileTheme  = document.getElementById('themeBtnMobile');
-  if(desktopTheme) desktopTheme.addEventListener('click', toggleTheme);
-  if(mobileTheme)  mobileTheme.addEventListener('click',  toggleTheme);
+  var dt = document.getElementById('themeBtn');
+  var mt = document.getElementById('themeBtnMobile');
+  if(dt) dt.addEventListener('click', toggleTheme);
+  if(mt) mt.addEventListener('click', toggleTheme);
 
   /* ── Hamburger / Drawer ── */
-  const ham     = document.getElementById('hamBtn');
-  const drawer  = document.getElementById('drawer');
-  const overlay = document.getElementById('drawerOverlay');
-  const closer  = document.getElementById('drawerClose');
+  var ham     = document.getElementById('hamBtn');
+  var drawer  = document.getElementById('drawer');
+  var overlay = document.getElementById('drawerOverlay');
+  var closer  = document.getElementById('drawerClose');
 
   function openDrawer(){
     overlay.style.display = 'block';
-    requestAnimationFrame(()=>{ drawer.classList.add('open'); overlay.classList.add('open'); });
-    ham.classList.add('open'); ham.setAttribute('aria-expanded','true');
+    requestAnimationFrame(function(){
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+    });
+    ham.classList.add('open');
+    ham.setAttribute('aria-expanded','true');
     document.body.style.overflow = 'hidden';
   }
   function closeDrawer(){
-    drawer.classList.remove('open'); overlay.classList.remove('open');
-    ham.classList.remove('open'); ham.setAttribute('aria-expanded','false');
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    ham.classList.remove('open');
+    ham.setAttribute('aria-expanded','false');
     document.body.style.overflow = '';
-    setTimeout(()=>{ overlay.style.display = 'none'; }, 380);
+    setTimeout(function(){ overlay.style.display = 'none'; }, 380);
   }
-  if(ham)     ham.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+  if(ham)     ham.addEventListener('click', function(){ drawer.classList.contains('open') ? closeDrawer() : openDrawer(); });
   if(overlay) overlay.addEventListener('click', closeDrawer);
   if(closer)  closer.addEventListener('click', closeDrawer);
-  document.querySelectorAll('.drawer-link').forEach(a => a.addEventListener('click', closeDrawer));
-  document.addEventListener('keydown', e => { if(e.key==='Escape') closeDrawer(); });
+  document.querySelectorAll('.drawer-link').forEach(function(a){ a.addEventListener('click', closeDrawer); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeDrawer(); });
 
   /* ── Smooth scroll ── */
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
     a.addEventListener('click', function(e){
-      const target = document.querySelector(this.getAttribute('href'));
+      var target = document.querySelector(this.getAttribute('href'));
       if(!target) return;
       e.preventDefault();
-      const navH = document.querySelector('nav').offsetHeight || 64;
+      var navH = (document.querySelector('nav') || {}).offsetHeight || 64;
       window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - navH - 8, behavior:'smooth' });
     });
   });
 
-  /* ══════════════════════════════════════════
+  /* ════════════════════════════════════════
      ANIMATION ENGINE
-     Safe-first: content is ALWAYS visible.
-     JS sets opacity:0 only right before
-     observing, so flash-of-invisible is
-     impossible on slow/mobile devices.
-  ══════════════════════════════════════════ */
+     iOS: section underlines + stat counter only.
+          NO opacity:0 ever set. Content always visible.
+     Others: full scroll-reveal system.
+  ════════════════════════════════════════ */
+
+  /* Section underline/shimmer — safe on all devices */
+  if('IntersectionObserver' in window){
+    var secObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting) e.target.classList.add('section-in');
+        else e.target.classList.remove('section-in');
+      });
+    },{ threshold:0.10 });
+    document.querySelectorAll('section,#stats').forEach(function(s){ secObs.observe(s); });
+  }
+
+  /* Stat counter — safe on all devices (only changes text, never hides) */
+  if('IntersectionObserver' in window){
+    var statObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var el = e.target.querySelector('.st-n');
+        if(!el || el.dataset.counted) return;
+        el.dataset.counted = '1';
+        var finalText = el.textContent.trim();
+        var num = parseFloat(finalText);
+        if(isNaN(num)){ statObs.unobserve(e.target); return; }
+        var suffix = finalText.replace(/[\d.]/g,'');
+        var startTime = null;
+        var dur = 1400;
+        function step(ts){
+          if(!startTime) startTime = ts;
+          var p    = Math.min((ts - startTime)/dur, 1);
+          var ease = 1 - Math.pow(1-p, 3);
+          el.textContent = (num%1===0 ? Math.round(ease*num) : (ease*num).toFixed(1)) + suffix;
+          if(p < 1) requestAnimationFrame(step);
+          else el.textContent = finalText;
+        }
+        requestAnimationFrame(step);
+        statObs.unobserve(e.target);
+      });
+    },{ threshold:0.4 });
+    document.querySelectorAll('.st-i').forEach(function(el){ statObs.observe(el); });
+  }
+
+  /* === Skip scroll-reveal on iOS — content stays fully visible === */
+  if(isIOS){
+    /* Nav active highlight still works (doesn't hide anything) */
+    if('IntersectionObserver' in window){
+      var navLinks = document.querySelectorAll('.nav-desktop a[href^="#"]');
+      var navSections = Array.from(navLinks).map(function(a){
+        return document.querySelector(a.getAttribute('href'));
+      }).filter(Boolean);
+      var navObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){
+            var id = '#'+e.target.id;
+            navLinks.forEach(function(a){
+              a.classList.toggle('nav-active', a.getAttribute('href')===id);
+            });
+          }
+        });
+      },{ rootMargin:'-40% 0px -55% 0px' });
+      navSections.forEach(function(s){ navObs.observe(s); });
+    }
+    return; /* EXIT — no scroll-reveal on iOS */
+  }
+
+  /* === Scroll-reveal for Android + Desktop === */
   if(!('IntersectionObserver' in window)) return;
 
-  /* Use a single low threshold that works on all screen sizes */
-  const THRESHOLD = 0.06;
-  /* rootMargin pushes trigger point slightly before element enters */
-  const ROOT_MARGIN = '0px 0px -40px 0px';
-
-  /* enterObs — fires ONCE per element (unobserves after .in added) */
-  const enterObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
+  var enterObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
       if(!e.isIntersecting) return;
       e.target.classList.add('in-' + (e.target.dataset.anim || 'up'));
-      enterObs.unobserve(e.target); // never re-hides — mobile safe
+      enterObs.unobserve(e.target);
     });
-  }, { threshold: THRESHOLD, rootMargin: ROOT_MARGIN });
+  },{ threshold:0.06, rootMargin:'0px 0px -40px 0px' });
 
-  /*
-   * prep(el, dir, delayIdx)
-   * Adds .will-anim + delay class, sets data-anim,
-   * then observes. opacity:0 only applied via
-   * `html.anim-ready .will-anim` so content shows
-   * normally until the observer is actually running.
-   */
   function prep(el, dir, delayIdx){
     if(!el) return;
     el.classList.add('will-anim');
     el.dataset.anim = dir;
-    if(delayIdx > 0){
-      el.classList.add('del-' + delayIdx);
-    }
+    if(delayIdx > 0) el.classList.add('del-'+delayIdx);
     enterObs.observe(el);
   }
 
-  /* Section observer for heading underline + eyebrow shimmer */
-  const secObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if(e.isIntersecting) e.target.classList.add('section-in');
-      else e.target.classList.remove('section-in');
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('section, #stats').forEach(s => secObs.observe(s));
-
-  /* ── Assign animations per section ── */
-
   /* HERO */
   ['.hero-badge','.hero-name','.hero-role','.hero-desc','.hero-btns','.hero-socials']
-    .forEach((sel,i) => document.querySelectorAll(sel).forEach(el => prep(el,'up',i+1)));
-  document.querySelectorAll('.pipe-col').forEach(el => prep(el,'left',3));
-  document.querySelectorAll('.pn').forEach((el,i) => prep(el,'right', Math.min(i+1,6)));
-
+    .forEach(function(sel,i){ document.querySelectorAll(sel).forEach(function(el){ prep(el,'up',i+1); }); });
+  document.querySelectorAll('.pipe-col').forEach(function(el){ prep(el,'left',3); });
+  document.querySelectorAll('.pn').forEach(function(el,i){ prep(el,'right',Math.min(i+1,6)); });
   /* STATS */
-  document.querySelectorAll('.st-i').forEach((el,i) => prep(el,'zoom',i+1));
-
+  document.querySelectorAll('.st-i').forEach(function(el,i){ prep(el,'zoom',i+1); });
   /* ABOUT */
-  document.querySelectorAll('.ab-text p').forEach((el,i) => prep(el,'right',i+1));
-  document.querySelectorAll('#about .glass').forEach((el,i) => prep(el,'left',i+2));
-
+  document.querySelectorAll('.ab-text p').forEach(function(el,i){ prep(el,'right',i+1); });
+  document.querySelectorAll('#about .glass').forEach(function(el,i){ prep(el,'left',i+2); });
   /* SKILLS */
-  document.querySelectorAll('.sk-card').forEach((el,i) => prep(el,'flip',(i%4)+1));
-
+  document.querySelectorAll('.sk-card').forEach(function(el,i){ prep(el,'flip',(i%4)+1); });
   /* EXPERIENCE */
-  document.querySelectorAll('.tl-card').forEach((el,i) => prep(el,'right',i+1));
-
+  document.querySelectorAll('.tl-card').forEach(function(el,i){ prep(el,'right',i+1); });
   /* PROJECTS */
-  document.querySelectorAll('.pj-card').forEach((el,i) => prep(el,'up',(i%4)+1));
-
+  document.querySelectorAll('.pj-card').forEach(function(el,i){ prep(el,'up',(i%4)+1); });
   /* ACHIEVEMENTS */
-  const achDirs = ['up','left','right','zoom'];
-  document.querySelectorAll('.ac-card').forEach((el,i) => prep(el, achDirs[i%4], (i%4)+1));
-
+  var achDirs=['up','left','right','zoom'];
+  document.querySelectorAll('.ac-card').forEach(function(el,i){ prep(el,achDirs[i%4],(i%4)+1); });
   /* CONTACT */
-  document.querySelectorAll('.cl').forEach((el,i) => prep(el,'right',Math.min(i+1,6)));
-  document.querySelectorAll('.frm').forEach(el => prep(el,'left',2));
-  document.querySelectorAll('.ff').forEach((el,i) => prep(el,'up',Math.min(i+2,8)));
-
+  document.querySelectorAll('.cl').forEach(function(el,i){ prep(el,'right',Math.min(i+1,6)); });
+  document.querySelectorAll('.frm').forEach(function(el){ prep(el,'left',2); });
+  document.querySelectorAll('.ff').forEach(function(el,i){ prep(el,'up',Math.min(i+2,8)); });
   /* FOOTER */
-  document.querySelectorAll('footer > *').forEach((el,i) => prep(el,'up',i+1));
+  document.querySelectorAll('footer > *').forEach(function(el,i){ prep(el,'up',i+1); });
 
-  /* NOW mark html as animation-ready — this is what sets opacity:0 on .will-anim */
-  /* Using rAF + setTimeout ensures DOM paint has happened first                   */
-  requestAnimationFrame(()=>{
-    setTimeout(()=>{ html.classList.add('anim-ready'); }, 50);
+  /* Mark ready — triggers opacity:0 on .will-anim (non-iOS only due to CSS guard) */
+  requestAnimationFrame(function(){
+    setTimeout(function(){ html.classList.add('anim-ready'); }, 80);
   });
 
-  /* ── Nav active highlight on scroll ── */
-  const navLinks = document.querySelectorAll('.nav-desktop a[href^="#"]');
-  const navSections = [...navLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
-  const navObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
+  /* Nav active highlight */
+  var navLinks2 = document.querySelectorAll('.nav-desktop a[href^="#"]');
+  var navSecs   = Array.from(navLinks2).map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  var navObs2 = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
       if(e.isIntersecting){
-        const id = '#' + e.target.id;
-        navLinks.forEach(a => a.classList.toggle('nav-active', a.getAttribute('href') === id));
+        var id='#'+e.target.id;
+        navLinks2.forEach(function(a){ a.classList.toggle('nav-active', a.getAttribute('href')===id); });
       }
     });
-  }, { rootMargin:'-40% 0px -55% 0px' });
-  navSections.forEach(s => navObs.observe(s));
+  },{ rootMargin:'-40% 0px -55% 0px' });
+  navSecs.forEach(function(s){ navObs2.observe(s); });
 
-  /* ── 3D tilt on cards — desktop / pointer:fine only ── */
+  /* 3D tilt — desktop mouse only */
   if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
-    document.querySelectorAll('.pj-card, .sk-card').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width  - 0.5) * 10;
-        const y = ((e.clientY - r.top)  / r.height - 0.5) * -10;
-        card.style.transform = `perspective(700px) rotateY(${x}deg) rotateX(${y}deg) translateY(-6px)`;
+    document.querySelectorAll('.pj-card,.sk-card').forEach(function(card){
+      card.addEventListener('mousemove', function(e){
+        var r = card.getBoundingClientRect();
+        var x = ((e.clientX-r.left)/r.width  - 0.5)*10;
+        var y = ((e.clientY-r.top) /r.height - 0.5)*-10;
+        card.style.transform = 'perspective(700px) rotateY('+x+'deg) rotateX('+y+'deg) translateY(-6px)';
       });
-      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+      card.addEventListener('mouseleave', function(){ card.style.transform=''; });
     });
   }
-
-  /* ── Stat counter animation ── */
-  const statObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if(!e.isIntersecting) return;
-      const el = e.target.querySelector('.st-n');
-      if(!el || el.dataset.counted) return;
-      el.dataset.counted = '1';
-      const finalText = el.textContent.trim();
-      const num = parseFloat(finalText);
-      if(isNaN(num)){ statObs.unobserve(e.target); return; }
-      const suffix = finalText.replace(/[\d.]/g,'');
-      let startTime = null;
-      const duration = 1400;
-      function step(ts){
-        if(!startTime) startTime = ts;
-        const p = Math.min((ts - startTime) / duration, 1);
-        const ease = 1 - Math.pow(1 - p, 3);
-        el.textContent = (num % 1 === 0 ? Math.round(ease * num) : (ease * num).toFixed(1)) + suffix;
-        if(p < 1) requestAnimationFrame(step);
-        else el.textContent = finalText;
-      }
-      requestAnimationFrame(step);
-      statObs.unobserve(e.target);
-    });
-  }, { threshold: 0.4 });
-  document.querySelectorAll('.st-i').forEach(el => statObs.observe(el));
 
 })();
 </script>
