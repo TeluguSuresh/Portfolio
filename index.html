@@ -157,33 +157,144 @@ nav{
 ══════════════════════════════════════ */
 .drawer-overlay{
   display:none;position:fixed;inset:0;z-index:290;
-  background:var(--overlay);opacity:0;
-  transition:opacity 0.3s;
+  background:var(--overlay);
+  opacity:0;transition:opacity 0.3s;
 }
 .drawer-overlay.open{opacity:1}
+
 .drawer{
-  position:fixed;top:0;right:0;bottom:0;z-index:295;
-  width:min(300px,88vw);
-  background:var(--drawer-bg);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  position:fixed;
+  top:0;right:0;
+  width:min(320px,90vw);
+  height:100%;
+  height:100dvh;
+  z-index:295;
+  background:var(--drawer-bg);
+  backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
   border-left:1px solid var(--gb2);
-  transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
-  display:flex;flex-direction:column;
-  padding:80px 1.5rem 2rem;
-  padding-bottom:calc(2rem + env(safe-area-inset-bottom));
-  gap:0;overflow-y:auto;
+  box-shadow:-8px 0 40px rgba(80,40,180,0.18);
+  transform:translateX(100%);
+  transition:transform 0.38s cubic-bezier(0.4,0,0.2,1);
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
 }
 .drawer.open{transform:translateX(0)}
-.drawer a{
-  color:var(--tb);text-decoration:none;font-size:1.05rem;font-weight:500;
-  padding:0.85rem 0;border-bottom:1px solid var(--gb2);
-  display:flex;align-items:center;gap:0.75rem;
-  transition:color 0.2s;
+
+/* drawer header */
+.drawer-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:1rem 1.25rem;
+  height:58px;
+  border-bottom:1px solid var(--gb2);
+  flex-shrink:0;
 }
-.drawer a:last-child{border-bottom:none}
-.drawer a:hover{color:var(--lav)}
-.drawer-actions{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.75rem}
-.drawer-actions .btn-dl{justify-content:center;padding:0.75rem 1.5rem;font-size:0.9rem}
-.drawer-actions .theme-btn{width:100%;border-radius:12px;gap:0.6rem;font-size:0.9rem;height:46px}
+.drawer-logo{
+  font-family:'Playfair Display',serif;font-weight:800;font-size:1rem;
+  background:linear-gradient(135deg,var(--lav),var(--ice));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.drawer-close{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--tog);border:1px solid var(--togb);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1.1rem;line-height:1;
+  -webkit-tap-highlight-color:transparent;
+  transition:background 0.2s;
+  color:var(--tm);
+}
+.drawer-close:hover{background:rgba(140,100,240,0.18)}
+
+/* nav links list — equal height rows */
+.drawer-nav{
+  display:flex;
+  flex-direction:column;
+  padding:0.5rem 0;
+  flex-shrink:0;
+}
+.drawer-nav a{
+  display:flex;
+  align-items:center;
+  gap:0.85rem;
+  height:56px;           /* fixed height — all rows identical */
+  padding:0 1.5rem;
+  color:var(--tb);
+  text-decoration:none;
+  font-family:'DM Sans',sans-serif;
+  font-size:1rem;
+  font-weight:500;
+  border-left:3px solid transparent;
+  flex-shrink:0;
+  transition:color 0.2s,background 0.2s,border-color 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.drawer-nav a:hover,
+.drawer-nav a:focus{
+  color:var(--lav);
+  background:rgba(124,61,232,0.08);
+  border-left-color:var(--lav);
+}
+.drawer-nav a:active{
+  background:rgba(124,61,232,0.14);
+}
+.drawer-nav .nav-icon{
+  width:34px;height:34px;border-radius:9px;
+  background:linear-gradient(135deg,rgba(140,100,240,0.15),rgba(70,160,230,0.15));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;
+}
+
+/* drawer bottom actions */
+.drawer-bottom{
+  margin-top:auto;
+  padding:1.25rem 1.25rem;
+  padding-bottom:calc(1.25rem + env(safe-area-inset-bottom));
+  border-top:1px solid var(--gb2);
+  display:flex;
+  flex-direction:column;
+  gap:0.65rem;
+  flex-shrink:0;
+}
+.drawer-bottom .btn-dl{
+  justify-content:center;
+  padding:0.85rem 1.5rem;
+  font-size:0.88rem;
+  border-radius:14px;
+}
+.drawer-theme-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0.75rem 1rem;
+  background:var(--tog);
+  border:1px solid var(--togb);
+  border-radius:14px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.drawer-theme-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.78rem;
+  color:var(--tm);
+  letter-spacing:0.06em;
+}
+.drawer-theme-pill{
+  width:42px;height:24px;border-radius:12px;
+  background:linear-gradient(135deg,var(--lav),var(--ice));
+  position:relative;transition:background 0.3s;
+  flex-shrink:0;
+}
+.drawer-theme-pill::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);
+  transition:transform 0.3s;
+}
+[data-theme="dark"] .drawer-theme-pill::after{transform:translateX(18px)}
 
 /* ══════════════════════════════════════
    BUTTONS — MAIN
@@ -308,6 +419,14 @@ h2.st{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);
   margin:0.18rem 0.18rem 0 0;transition:background 0.3s,color 0.3s;
 }
 
+/* ══════════════════════════════════════
+   ABOUT
+══════════════════════════════════════ */
+.ab-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+.ab-text p{color:var(--tb);font-size:0.95rem;line-height:1.88;font-weight:400;margin-bottom:1rem}
+.ab-text p .hl{color:var(--lav);font-weight:600}
+.ic{padding:1.35rem}
+.il{font-family:'DM Mono',monospace;font-size:0.66rem;color:var(--tmu);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.7rem}
 
 /* ══════════════════════════════════════
    SKILLS
@@ -504,23 +623,50 @@ footer{
 
 <!-- ══════════ MOBILE DRAWER ══════════ -->
 <div class="drawer-overlay" id="drawerOverlay"></div>
-<nav class="drawer" id="drawer" aria-label="Mobile navigation">
-  <a href="#about" class="drawer-link">About</a>
-  <a href="#skills" class="drawer-link">Skills</a>
-  <a href="#experience" class="drawer-link">Experience</a>
-  <a href="#projects" class="drawer-link">Projects</a>
-  <a href="#achievements" class="drawer-link">Impact</a>
-  <a href="#contact" class="drawer-link">Contact</a>
-  <div class="drawer-actions">
-    <a href="https://raw.githubusercontent.com/telugusuresh/Portfolio/main/Telugu%20Doddi%20Suresh%20DE.pdf" download="Telugu_Doddi_Suresh_DE.pdf" target="_blank" class="btn-dl">
+<div class="drawer" id="drawer" role="dialog" aria-label="Mobile navigation" aria-modal="true">
+
+  <!-- Header -->
+  <div class="drawer-header">
+    <div class="drawer-logo">TDS</div>
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">✕</button>
+  </div>
+
+  <!-- Nav Links -->
+  <nav class="drawer-nav">
+    <a href="#about" class="drawer-link">
+      <span class="nav-icon">👤</span>About
+    </a>
+    <a href="#skills" class="drawer-link">
+      <span class="nav-icon">⚡</span>Skills
+    </a>
+    <a href="#experience" class="drawer-link">
+      <span class="nav-icon">💼</span>Experience
+    </a>
+    <a href="#projects" class="drawer-link">
+      <span class="nav-icon">🏗️</span>Projects
+    </a>
+    <a href="#achievements" class="drawer-link">
+      <span class="nav-icon">🏆</span>Impact
+    </a>
+    <a href="#contact" class="drawer-link">
+      <span class="nav-icon">✉️</span>Contact
+    </a>
+  </nav>
+
+  <!-- Bottom Actions -->
+  <div class="drawer-bottom">
+    <a href="https://raw.githubusercontent.com/telugusuresh/Portfolio/main/Telugu%20Doddi%20Suresh%20DE.pdf"
+       download="Telugu_Doddi_Suresh_DE.pdf" target="_blank" class="btn-dl">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Download Resume
     </a>
-    <button class="theme-btn" id="themeBtnMobile" aria-label="Toggle theme" style="font-size:0.88rem;padding:0 1rem">
-      <span id="themeIconMobile">🌙</span> Toggle Theme
-    </button>
+    <div class="drawer-theme-row" id="themeBtnMobile" role="button" aria-label="Toggle theme">
+      <span class="drawer-theme-label" id="themeIconMobile">🌙 &nbsp;Dark Mode</span>
+      <div class="drawer-theme-pill"></div>
+    </div>
   </div>
-</nav>
+
+</div>
 
 <!-- ══════════ HERO ══════════ -->
 <section id="hero">
@@ -804,37 +950,38 @@ footer{
     (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
   html.setAttribute('data-theme', saved);
 
-  function setThemeIcon(t){
-    const ico = t === 'dark' ? '☀️' : '🌙';
-    const d = document.getElementById('themeBtn');
-    const m = document.getElementById('themeBtnMobile');
-    const mi = document.getElementById('themeIconMobile');
-    if(d) d.textContent = ico;
-    if(m && mi) mi.textContent = ico;
+  function setThemeUI(t){
+    const desktopBtn = document.getElementById('themeBtn');
+    const mobileLabel = document.getElementById('themeIconMobile');
+    if(desktopBtn) desktopBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+    if(mobileLabel) mobileLabel.textContent = t === 'dark' ? '☀️  Light Mode' : '🌙  Dark Mode';
   }
-  setThemeIcon(saved);
+  setThemeUI(saved);
 
   function toggleTheme(){
     const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
     localStorage.setItem('tds-theme', next);
-    setThemeIcon(next);
+    setThemeUI(next);
   }
 
-  const tb = document.getElementById('themeBtn');
-  const tm = document.getElementById('themeBtnMobile');
-  if(tb) tb.addEventListener('click', toggleTheme);
-  if(tm) tm.addEventListener('click', toggleTheme);
+  const desktopTheme = document.getElementById('themeBtn');
+  const mobileTheme  = document.getElementById('themeBtnMobile');
+  if(desktopTheme) desktopTheme.addEventListener('click', toggleTheme);
+  if(mobileTheme)  mobileTheme.addEventListener('click', toggleTheme);
 
   /* ── Hamburger / Drawer ── */
-  const ham = document.getElementById('hamBtn');
-  const drawer = document.getElementById('drawer');
+  const ham     = document.getElementById('hamBtn');
+  const drawer  = document.getElementById('drawer');
   const overlay = document.getElementById('drawerOverlay');
+  const closer  = document.getElementById('drawerClose');
 
   function openDrawer(){
-    drawer.classList.add('open');
-    overlay.classList.add('open');
     overlay.style.display = 'block';
+    requestAnimationFrame(()=>{
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+    });
     ham.classList.add('open');
     ham.setAttribute('aria-expanded','true');
     document.body.style.overflow = 'hidden';
@@ -845,39 +992,39 @@ footer{
     ham.classList.remove('open');
     ham.setAttribute('aria-expanded','false');
     document.body.style.overflow = '';
-    setTimeout(()=>{ overlay.style.display='none'; }, 300);
+    setTimeout(()=>{ overlay.style.display = 'none'; }, 380);
   }
 
-  ham.addEventListener('click', ()=>{ drawer.classList.contains('open') ? closeDrawer() : openDrawer(); });
-  overlay.addEventListener('click', closeDrawer);
+  if(ham)     ham.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+  if(overlay) overlay.addEventListener('click', closeDrawer);
+  if(closer)  closer.addEventListener('click', closeDrawer);
+  document.querySelectorAll('.drawer-link').forEach(a => a.addEventListener('click', closeDrawer));
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDrawer(); });
 
-  /* close drawer on link click */
-  drawer.querySelectorAll('a.drawer-link').forEach(a => {
-    a.addEventListener('click', closeDrawer);
-  });
-
-  /* ── Smooth scroll offset (fixed nav) ── */
+  /* ── Smooth scroll with nav offset ── */
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', function(e){
-      const target = document.querySelector(this.getAttribute('href'));
+      const id = this.getAttribute('href');
+      const target = document.querySelector(id);
       if(!target) return;
       e.preventDefault();
-      const navH = document.querySelector('nav').offsetHeight;
+      const navH = document.querySelector('nav').offsetHeight || 64;
       const top = target.getBoundingClientRect().top + window.scrollY - navH - 8;
-      window.scrollTo({ top, behavior: 'smooth' });
+      window.scrollTo({ top, behavior:'smooth' });
     });
   });
 
-  /* ── Scroll-reveal (Intersection Observer) ── */
+  /* ── Scroll-reveal ── */
   if('IntersectionObserver' in window){
     const style = document.createElement('style');
-    style.textContent = '.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}.reveal.visible{opacity:1;transform:translateY(0)}';
+    style.textContent='.reveal{opacity:0;transform:translateY(18px);transition:opacity 0.55s ease,transform 0.55s ease}.reveal.visible{opacity:1;transform:translateY(0)}';
     document.head.appendChild(style);
-    const els = document.querySelectorAll('.glass,.glass2,.ac-card,.tl-card,.pj-card,.sk-card,.st-i');
-    const obs = new IntersectionObserver((entries)=>{
-      entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }});
-    }, { threshold: 0.1 });
-    els.forEach(el => { el.classList.add('reveal'); obs.observe(el); });
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }});
+    },{ threshold:0.1 });
+    document.querySelectorAll('.glass,.glass2,.ac-card,.tl-card,.pj-card,.sk-card,.st-i').forEach(el=>{
+      el.classList.add('reveal'); obs.observe(el);
+    });
   }
 })();
 </script>
