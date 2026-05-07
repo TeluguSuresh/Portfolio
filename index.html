@@ -944,212 +944,178 @@ footer{
 <!-- ══════════ ANIMATION STYLES ══════════ -->
 <style>
 /* ── Keyframes ── */
-@keyframes slideUp   { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
-@keyframes slideLeft { from{opacity:0;transform:translateX(50px)} to{opacity:1;transform:translateX(0)} }
-@keyframes slideRight{ from{opacity:0;transform:translateX(-50px)} to{opacity:1;transform:translateX(0)} }
-@keyframes zoomIn    { from{opacity:0;transform:scale(0.88)} to{opacity:1;transform:scale(1)} }
-@keyframes flipIn    { from{opacity:0;transform:rotateX(-20deg) translateY(24px)} to{opacity:1;transform:rotateX(0) translateY(0)} }
-@keyframes glowPulse { 0%,100%{box-shadow:0 0 0 0 rgba(124,61,232,0)} 50%{box-shadow:0 0 28px 6px rgba(124,61,232,0.18)} }
-@keyframes borderFlow{
-  0%  { background-position:0% 50% }
-  50% { background-position:100% 50% }
-  100%{ background-position:0% 50% }
+@keyframes slideUp    { from{opacity:0;transform:translateY(36px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideLeft  { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+@keyframes slideRight { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
+@keyframes zoomIn     { from{opacity:0;transform:scale(0.90)} to{opacity:1;transform:scale(1)} }
+@keyframes flipIn     { from{opacity:0;transform:perspective(600px) rotateX(-16deg) translateY(20px)} to{opacity:1;transform:perspective(600px) rotateX(0) translateY(0)} }
+@keyframes glowPulse  { 0%,100%{box-shadow:0 0 0 0 rgba(124,61,232,0)} 50%{box-shadow:0 0 28px 6px rgba(124,61,232,0.18)} }
+@keyframes shimmer    { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes floatY     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+@keyframes spinOnce   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes sweepIn    { from{left:-100%} to{left:150%} }
+
+/* ── SAFE DEFAULT: all animated elements visible until JS kicks in ── */
+/* JS adds .anim-ready to <html> only after observers are set up     */
+html.anim-ready .will-anim {
+  opacity: 0;
+  transition: none;
 }
-@keyframes countUp   { from{opacity:0;transform:translateY(12px) scale(0.8)} to{opacity:1;transform:translateY(0) scale(1)} }
-@keyframes shimmer   { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
-@keyframes floatY    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-@keyframes spinOnce  { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-
-/* ── Scroll-enter states (before visible) ── */
-.anim-up    { opacity:0; transform:translateY(40px); }
-.anim-left  { opacity:0; transform:translateX(50px); }
-.anim-right { opacity:0; transform:translateX(-50px); }
-.anim-zoom  { opacity:0; transform:scale(0.88); }
-.anim-flip  { opacity:0; transform:rotateX(-20deg) translateY(24px); }
-
-/* ── When visible ── */
-.anim-up.in    { animation:slideUp    0.65s cubic-bezier(0.22,1,0.36,1) forwards; }
-.anim-left.in  { animation:slideLeft  0.65s cubic-bezier(0.22,1,0.36,1) forwards; }
-.anim-right.in { animation:slideRight 0.65s cubic-bezier(0.22,1,0.36,1) forwards; }
-.anim-zoom.in  { animation:zoomIn     0.60s cubic-bezier(0.22,1,0.36,1) forwards; }
-.anim-flip.in  { animation:flipIn     0.60s cubic-bezier(0.22,1,0.36,1) forwards; perspective:800px; }
+/* once .in is added — play animation */
+html.anim-ready .will-anim.in-up    { animation: slideUp    0.62s cubic-bezier(0.22,1,0.36,1) forwards; }
+html.anim-ready .will-anim.in-left  { animation: slideLeft  0.62s cubic-bezier(0.22,1,0.36,1) forwards; }
+html.anim-ready .will-anim.in-right { animation: slideRight 0.62s cubic-bezier(0.22,1,0.36,1) forwards; }
+html.anim-ready .will-anim.in-zoom  { animation: zoomIn     0.55s cubic-bezier(0.22,1,0.36,1) forwards; }
+html.anim-ready .will-anim.in-flip  { animation: flipIn     0.58s cubic-bezier(0.22,1,0.36,1) forwards; }
 
 /* stagger delays */
-.d1{animation-delay:0.05s}.d2{animation-delay:0.12s}.d3{animation-delay:0.19s}
-.d4{animation-delay:0.26s}.d5{animation-delay:0.33s}.d6{animation-delay:0.40s}
-.d7{animation-delay:0.47s}.d8{animation-delay:0.54s}
+.del-1{animation-delay:0.04s} .del-2{animation-delay:0.10s} .del-3{animation-delay:0.16s}
+.del-4{animation-delay:0.22s} .del-5{animation-delay:0.28s} .del-6{animation-delay:0.34s}
+.del-7{animation-delay:0.40s} .del-8{animation-delay:0.46s}
 
 /* ── Section heading underline wipe ── */
 .st { position:relative; display:inline-block; }
-.st::after{
-  content:'';position:absolute;bottom:-4px;left:0;
-  width:0;height:3px;border-radius:2px;
+.st::after {
+  content:''; position:absolute; bottom:-4px; left:0;
+  width:0; height:3px; border-radius:2px;
   background:linear-gradient(90deg,var(--lav),var(--ice),var(--ros));
   transition:width 0.7s cubic-bezier(0.22,1,0.36,1);
 }
-.section-in .st::after{ width:100%; }
+.section-in .st::after { width:100%; }
 
-/* ── Skill cards ── */
-.sk-card{
-  transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),
-             box-shadow 0.3s ease,
-             border-color 0.3s ease !important;
-}
-.sk-card:hover{
-  transform:translateY(-8px) scale(1.02) !important;
-  box-shadow:var(--sh2) !important;
-  border-color:var(--bb) !important;
-}
-.sk-card:hover .sk-ico{
-  animation:spinOnce 0.5s cubic-bezier(0.22,1,0.36,1);
+/* ── Eyebrow shimmer ── */
+.ey { position:relative; overflow:hidden; }
+.section-in .ey::after {
+  content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.28),transparent);
+  animation: sweepIn 0.9s ease forwards;
 }
 
-/* ── Project cards ── */
-.pj-card{
-  transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),
-             box-shadow 0.3s ease,
-             border-color 0.3s ease !important;
-  position:relative;overflow:hidden;
+/* ── Skill cards hover ── */
+.sk-card {
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, border-color 0.3s ease !important;
 }
-.pj-card::after{
-  content:'';position:absolute;inset:0;border-radius:20px;
+@media(hover:hover){
+  .sk-card:hover {
+    transform: translateY(-8px) scale(1.02) !important;
+    box-shadow: var(--sh2) !important;
+    border-color: var(--bb) !important;
+  }
+  .sk-card:hover .sk-ico { animation: spinOnce 0.5s cubic-bezier(0.22,1,0.36,1); }
+}
+
+/* ── Project cards hover ── */
+.pj-card {
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, border-color 0.3s ease !important;
+  position: relative; overflow: hidden;
+}
+.pj-card::after {
+  content:''; position:absolute; inset:0; border-radius:20px;
   background:linear-gradient(135deg,rgba(124,61,232,0.06),rgba(26,143,212,0.06));
-  opacity:0;transition:opacity 0.3s;pointer-events:none;
+  opacity:0; transition:opacity 0.3s; pointer-events:none;
 }
-.pj-card:hover::after{ opacity:1; }
-.pj-card:hover{
-  transform:translateY(-8px) !important;
-  box-shadow:0 24px 60px rgba(100,70,220,0.22) !important;
-  border-color:rgba(124,61,232,0.5) !important;
-}
-.pj-card:hover .pj-ico{
-  animation:floatY 1.2s ease-in-out infinite;
+@media(hover:hover){
+  .pj-card:hover::after { opacity:1; }
+  .pj-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 24px 60px rgba(100,70,220,0.22) !important;
+    border-color: rgba(124,61,232,0.5) !important;
+  }
+  .pj-card:hover .pj-ico { animation: floatY 1.2s ease-in-out infinite; }
 }
 
-/* ── Achievement cards ── */
-.ac-card{
-  transition:transform 0.28s cubic-bezier(0.22,1,0.36,1),
-             box-shadow 0.28s ease,
-             border-color 0.28s ease;
-  position:relative;overflow:hidden;
+/* ── Achievement cards hover ── */
+.ac-card {
+  transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease, border-color 0.28s ease;
+  position: relative; overflow: hidden;
 }
-.ac-card::before{
-  content:'';position:absolute;top:0;left:-100%;
-  width:60%;height:100%;
+.ac-card::before {
+  content:''; position:absolute; top:0; left:-100%;
+  width:60%; height:100%;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,0.09),transparent);
-  transition:left 0.55s ease;pointer-events:none;
+  pointer-events:none;
 }
-.ac-card:hover::before{ left:150%; }
-.ac-card:hover{
-  transform:translateY(-5px) scale(1.02);
-  box-shadow:var(--sh2);
-  border-color:rgba(124,61,232,0.45);
-}
-
-/* ── Timeline cards ── */
-.tl-card{
-  transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),
-             box-shadow 0.3s ease,
-             border-color 0.3s ease !important;
-}
-.tl-card:hover{
-  transform:translateX(8px) !important;
-  box-shadow:var(--sh2) !important;
-  border-color:rgba(124,61,232,0.45) !important;
-}
-.tl-card:hover .tl-ro{
-  background:linear-gradient(135deg,var(--lav),var(--ice));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+@media(hover:hover){
+  .ac-card:hover::before { animation: sweepIn 0.5s ease forwards; }
+  .ac-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: var(--sh2);
+    border-color: rgba(124,61,232,0.45);
+  }
 }
 
-/* ── Contact links ── */
-.cl{
-  transition:transform 0.28s cubic-bezier(0.22,1,0.36,1),
-             box-shadow 0.28s ease,
-             border-color 0.28s ease !important;
-  position:relative;overflow:hidden;
+/* ── Timeline cards hover ── */
+.tl-card {
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, border-color 0.3s ease !important;
 }
-.cl::before{
-  content:'';position:absolute;inset:0;border-radius:14px;
+@media(hover:hover){
+  .tl-card:hover {
+    transform: translateX(8px) !important;
+    box-shadow: var(--sh2) !important;
+    border-color: rgba(124,61,232,0.45) !important;
+  }
+  .tl-card:hover .tl-ro {
+    background: linear-gradient(135deg,var(--lav),var(--ice));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+}
+
+/* ── Contact links hover ── */
+.cl {
+  transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease, border-color 0.28s ease !important;
+  position: relative; overflow: hidden;
+}
+.cl::before {
+  content:''; position:absolute; inset:0; border-radius:14px;
   background:linear-gradient(135deg,rgba(124,61,232,0.07),rgba(26,143,212,0.07));
-  opacity:0;transition:opacity 0.3s;pointer-events:none;
+  opacity:0; transition:opacity 0.3s; pointer-events:none;
 }
-.cl:hover::before{ opacity:1; }
-.cl:hover{
-  transform:translateX(8px) !important;
-  box-shadow:var(--sh2) !important;
-  border-color:rgba(124,61,232,0.5) !important;
-}
-.cl:hover .cl-ic{
-  animation:floatY 0.8s ease-in-out;
-}
-
-/* ── Stats counter glow ── */
-.st-i{
-  transition:background 0.3s,box-shadow 0.3s;
-  cursor:default;
-}
-.st-i:hover{
-  background:rgba(124,61,232,0.1) !important;
-  box-shadow:inset 0 0 30px rgba(124,61,232,0.08);
-}
-.st-i:hover .st-n{
-  animation:glowPulse 1s ease;
+@media(hover:hover){
+  .cl:hover::before { opacity:1; }
+  .cl:hover {
+    transform: translateX(8px) !important;
+    box-shadow: var(--sh2) !important;
+    border-color: rgba(124,61,232,0.5) !important;
+  }
+  .cl:hover .cl-ic { animation: floatY 0.8s ease-in-out; }
 }
 
-/* ── Pipe nodes ── */
-.pn{
-  transition:transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-.pn:hover{
-  transform:translateX(6px);
-  box-shadow:0 4px 20px rgba(124,61,232,0.15);
-  border-color:var(--bb);
+/* ── Stats hover ── */
+.st-i { transition: background 0.3s, box-shadow 0.3s; cursor:default; }
+@media(hover:hover){
+  .st-i:hover { background:rgba(124,61,232,0.10) !important; box-shadow:inset 0 0 30px rgba(124,61,232,0.08); }
+  .st-i:hover .st-n { animation: glowPulse 1s ease; }
 }
 
-/* ── Nav active highlight on scroll ── */
-.nav-desktop a{
-  position:relative;
+/* ── Pipe nodes hover ── */
+.pn { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+@media(hover:hover){
+  .pn:hover { transform:translateX(6px); box-shadow:0 4px 20px rgba(124,61,232,0.15); border-color:var(--bb); }
 }
-.nav-desktop a::after{
-  content:'';position:absolute;bottom:-4px;left:50%;right:50%;
-  height:2px;border-radius:2px;
+
+/* ── Nav active underline ── */
+.nav-desktop a { position:relative; }
+.nav-desktop a::after {
+  content:''; position:absolute; bottom:-4px; left:50%; right:50%;
+  height:2px; border-radius:2px;
   background:linear-gradient(90deg,var(--lav),var(--ice));
-  transition:left 0.3s ease,right 0.3s ease;
+  transition: left 0.3s ease, right 0.3s ease;
 }
 .nav-desktop a.nav-active::after,
-.nav-desktop a:hover::after{
-  left:0;right:0;
-}
-.nav-desktop a.nav-active{ color:var(--lav) !important; }
+.nav-desktop a:hover::after { left:0; right:0; }
+.nav-desktop a.nav-active { color:var(--lav) !important; }
 
-/* ── Form field focus lift ── */
-.ff{
-  transition:border-color 0.2s,box-shadow 0.25s,transform 0.2s !important;
-}
-.ff:focus{
-  transform:translateY(-1px);
+/* ── Form fields ── */
+@media(hover:hover){
+  .ff:focus { transform:translateY(-1px); }
 }
 
 /* ── Hero badge float ── */
-.hero-badge{
-  animation:floatY 3.5s ease-in-out infinite;
-}
-
-/* ── Eyebrow shimmer on section enter ── */
-.ey{
-  position:relative;overflow:hidden;
-}
-.section-in .ey::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.25) 50%,transparent 100%);
-  background-size:200% 100%;
-  animation:shimmer 1s ease forwards;
-}
+.hero-badge { animation: floatY 3.5s ease-in-out infinite; }
 
 /* respect prefers-reduced-motion */
 @media(prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important}
+  *, *::before, *::after { animation:none !important; transition:none !important; }
 }
 </style>
 
@@ -1164,9 +1130,9 @@ footer{
   html.setAttribute('data-theme', saved);
 
   function setThemeUI(t){
-    const desktopBtn = document.getElementById('themeBtn');
+    const desktopBtn  = document.getElementById('themeBtn');
     const mobileLabel = document.getElementById('themeIconMobile');
-    if(desktopBtn) desktopBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+    if(desktopBtn)  desktopBtn.textContent  = t === 'dark' ? '☀️' : '🌙';
     if(mobileLabel) mobileLabel.textContent = t === 'dark' ? '☀️  Light Mode' : '🌙  Dark Mode';
   }
   setThemeUI(saved);
@@ -1180,7 +1146,7 @@ footer{
   const desktopTheme = document.getElementById('themeBtn');
   const mobileTheme  = document.getElementById('themeBtnMobile');
   if(desktopTheme) desktopTheme.addEventListener('click', toggleTheme);
-  if(mobileTheme)  mobileTheme.addEventListener('click', toggleTheme);
+  if(mobileTheme)  mobileTheme.addEventListener('click',  toggleTheme);
 
   /* ── Hamburger / Drawer ── */
   const ham     = document.getElementById('hamBtn');
@@ -1217,139 +1183,148 @@ footer{
     });
   });
 
-  /* ══════════════════════════════════
+  /* ══════════════════════════════════════════
      ANIMATION ENGINE
-  ══════════════════════════════════ */
+     Safe-first: content is ALWAYS visible.
+     JS sets opacity:0 only right before
+     observing, so flash-of-invisible is
+     impossible on slow/mobile devices.
+  ══════════════════════════════════════════ */
   if(!('IntersectionObserver' in window)) return;
 
-  /* 1. Section-level observer — triggers .section-in on each <section> */
-  const secObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if(e.isIntersecting) e.target.classList.add('section-in');
-      else e.target.classList.remove('section-in'); // re-fires on scroll back
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('section, #stats').forEach(s => secObs.observe(s));
+  /* Use a single low threshold that works on all screen sizes */
+  const THRESHOLD = 0.06;
+  /* rootMargin pushes trigger point slightly before element enters */
+  const ROOT_MARGIN = '0px 0px -40px 0px';
 
-  /* 2. Element entrance animations with per-section flavours */
+  /* enterObs — fires ONCE per element (unobserves after .in added) */
   const enterObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
-      if(e.isIntersecting){
-        e.target.classList.add('in');
-        // don't unobserve — allows re-animation on scroll back
-      } else {
-        // reset so it can re-animate next time
-        e.target.classList.remove('in');
-      }
+      if(!e.isIntersecting) return;
+      e.target.classList.add('in-' + (e.target.dataset.anim || 'up'));
+      enterObs.unobserve(e.target); // never re-hides — mobile safe
     });
-  }, { threshold: 0.12 });
+  }, { threshold: THRESHOLD, rootMargin: ROOT_MARGIN });
 
-  /* helper to assign animation class + delay */
-  function prep(el, animClass, delayClass){
-    el.classList.add(animClass);
-    if(delayClass) el.classList.add(delayClass);
+  /*
+   * prep(el, dir, delayIdx)
+   * Adds .will-anim + delay class, sets data-anim,
+   * then observes. opacity:0 only applied via
+   * `html.anim-ready .will-anim` so content shows
+   * normally until the observer is actually running.
+   */
+  function prep(el, dir, delayIdx){
+    if(!el) return;
+    el.classList.add('will-anim');
+    el.dataset.anim = dir;
+    if(delayIdx > 0){
+      el.classList.add('del-' + delayIdx);
+    }
     enterObs.observe(el);
   }
 
-  /* ── HERO ── */
-  document.querySelectorAll('.hero-badge,.hero-name,.hero-role,.hero-desc').forEach((el,i)=>{
-    prep(el,'anim-up',['d1','d2','d3','d4'][i]);
+  /* Section observer for heading underline + eyebrow shimmer */
+  const secObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting) e.target.classList.add('section-in');
+      else e.target.classList.remove('section-in');
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('section, #stats').forEach(s => secObs.observe(s));
+
+  /* ── Assign animations per section ── */
+
+  /* HERO */
+  ['.hero-badge','.hero-name','.hero-role','.hero-desc','.hero-btns','.hero-socials']
+    .forEach((sel,i) => document.querySelectorAll(sel).forEach(el => prep(el,'up',i+1)));
+  document.querySelectorAll('.pipe-col').forEach(el => prep(el,'left',3));
+  document.querySelectorAll('.pn').forEach((el,i) => prep(el,'right', Math.min(i+1,6)));
+
+  /* STATS */
+  document.querySelectorAll('.st-i').forEach((el,i) => prep(el,'zoom',i+1));
+
+  /* ABOUT */
+  document.querySelectorAll('.ab-text p').forEach((el,i) => prep(el,'right',i+1));
+  document.querySelectorAll('#about .glass').forEach((el,i) => prep(el,'left',i+2));
+
+  /* SKILLS */
+  document.querySelectorAll('.sk-card').forEach((el,i) => prep(el,'flip',(i%4)+1));
+
+  /* EXPERIENCE */
+  document.querySelectorAll('.tl-card').forEach((el,i) => prep(el,'right',i+1));
+
+  /* PROJECTS */
+  document.querySelectorAll('.pj-card').forEach((el,i) => prep(el,'up',(i%4)+1));
+
+  /* ACHIEVEMENTS */
+  const achDirs = ['up','left','right','zoom'];
+  document.querySelectorAll('.ac-card').forEach((el,i) => prep(el, achDirs[i%4], (i%4)+1));
+
+  /* CONTACT */
+  document.querySelectorAll('.cl').forEach((el,i) => prep(el,'right',Math.min(i+1,6)));
+  document.querySelectorAll('.frm').forEach(el => prep(el,'left',2));
+  document.querySelectorAll('.ff').forEach((el,i) => prep(el,'up',Math.min(i+2,8)));
+
+  /* FOOTER */
+  document.querySelectorAll('footer > *').forEach((el,i) => prep(el,'up',i+1));
+
+  /* NOW mark html as animation-ready — this is what sets opacity:0 on .will-anim */
+  /* Using rAF + setTimeout ensures DOM paint has happened first                   */
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{ html.classList.add('anim-ready'); }, 50);
   });
-  document.querySelectorAll('.hero-btns,.hero-socials').forEach((el,i)=>prep(el,'anim-up',['d5','d6'][i]));
-  document.querySelectorAll('.pipe-col').forEach(el=>prep(el,'anim-left','d3'));
-  document.querySelectorAll('.pn').forEach((el,i)=>prep(el,'anim-right',['d1','d2','d3','d4','d5'][Math.min(i,4)]));
 
-  /* ── STATS ── */
-  document.querySelectorAll('.st-i').forEach((el,i)=>prep(el,'anim-zoom',['d1','d2','d3','d4'][i]));
-
-  /* ── ABOUT ── */
-  document.querySelectorAll('.ab-text p').forEach((el,i)=>prep(el,'anim-right',['d1','d2','d3'][i]));
-  document.querySelectorAll('#about .glass').forEach((el,i)=>prep(el,'anim-left',['d2','d3','d4'][i]));
-
-  /* ── SKILLS ── */
-  document.querySelectorAll('.sk-card').forEach((el,i)=>{
-    prep(el,'anim-flip',['d1','d2','d3','d4','d1','d2','d3','d4'][i%8]);
-  });
-
-  /* ── EXPERIENCE ── */
-  document.querySelectorAll('.tl-card').forEach((el,i)=>prep(el,'anim-right',['d1','d2','d3'][i]));
-  document.querySelectorAll('.tl-i::before').forEach(el=>prep(el,'anim-zoom','d1'));
-
-  /* ── PROJECTS ── */
-  document.querySelectorAll('.pj-card').forEach((el,i)=>{
-    prep(el,'anim-up',['d1','d2','d3','d1','d2'][i%5]);
-  });
-
-  /* ── ACHIEVEMENTS ── */
-  document.querySelectorAll('.ac-card').forEach((el,i)=>{
-    const anims=['anim-up','anim-left','anim-right','anim-zoom'];
-    prep(el, anims[i%4], ['d1','d2','d3','d4','d1','d2','d3','d4'][i%8]);
-  });
-
-  /* ── CONTACT ── */
-  document.querySelectorAll('.cl').forEach((el,i)=>prep(el,'anim-right',['d1','d2','d3','d4','d5'][i]));
-  document.querySelectorAll('.frm').forEach(el=>prep(el,'anim-left','d2'));
-  document.querySelectorAll('.ff').forEach((el,i)=>prep(el,'anim-up',['d2','d3','d4','d5','d6'][i]));
-
-  /* ── FOOTER ── */
-  document.querySelectorAll('footer > *').forEach((el,i)=>prep(el,'anim-up',['d1','d2'][i]));
-
-  /* 3. Nav active link highlight on scroll */
+  /* ── Nav active highlight on scroll ── */
   const navLinks = document.querySelectorAll('.nav-desktop a[href^="#"]');
-  const sections = [...navLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
-
+  const navSections = [...navLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
   const navObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if(e.isIntersecting){
         const id = '#' + e.target.id;
-        navLinks.forEach(a => {
-          a.classList.toggle('nav-active', a.getAttribute('href') === id);
-        });
+        navLinks.forEach(a => a.classList.toggle('nav-active', a.getAttribute('href') === id));
       }
     });
   }, { rootMargin:'-40% 0px -55% 0px' });
-  sections.forEach(s => navObs.observe(s));
+  navSections.forEach(s => navObs.observe(s));
 
-  /* 4. Tilt effect on project & skill cards (desktop only) */
+  /* ── 3D tilt on cards — desktop / pointer:fine only ── */
   if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
     document.querySelectorAll('.pj-card, .sk-card').forEach(card => {
       card.addEventListener('mousemove', e => {
         const r = card.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width  - 0.5) * 12;
-        const y = ((e.clientY - r.top)  / r.height - 0.5) * -12;
-        card.style.transform = `perspective(600px) rotateY(${x}deg) rotateX(${y}deg) translateY(-6px)`;
+        const x = ((e.clientX - r.left) / r.width  - 0.5) * 10;
+        const y = ((e.clientY - r.top)  / r.height - 0.5) * -10;
+        card.style.transform = `perspective(700px) rotateY(${x}deg) rotateX(${y}deg) translateY(-6px)`;
       });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
     });
   }
 
-  /* 5. Stat counter animation */
+  /* ── Stat counter animation ── */
   const statObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if(!e.isIntersecting) return;
       const el = e.target.querySelector('.st-n');
-      if(!el || el.dataset.animated) return;
-      el.dataset.animated = '1';
+      if(!el || el.dataset.counted) return;
+      el.dataset.counted = '1';
       const finalText = el.textContent.trim();
       const num = parseFloat(finalText);
-      if(isNaN(num)) return;
+      if(isNaN(num)){ statObs.unobserve(e.target); return; }
       const suffix = finalText.replace(/[\d.]/g,'');
-      let start = 0, duration = 1400, startTime = null;
+      let startTime = null;
+      const duration = 1400;
       function step(ts){
         if(!startTime) startTime = ts;
         const p = Math.min((ts - startTime) / duration, 1);
         const ease = 1 - Math.pow(1 - p, 3);
-        const cur = num % 1 === 0 ? Math.round(ease * num) : (ease * num).toFixed(1);
-        el.textContent = cur + suffix;
+        el.textContent = (num % 1 === 0 ? Math.round(ease * num) : (ease * num).toFixed(1)) + suffix;
         if(p < 1) requestAnimationFrame(step);
         else el.textContent = finalText;
       }
       requestAnimationFrame(step);
       statObs.unobserve(e.target);
     });
-  }, { threshold:0.5 });
+  }, { threshold: 0.4 });
   document.querySelectorAll('.st-i').forEach(el => statObs.observe(el));
 
 })();
